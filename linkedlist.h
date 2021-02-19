@@ -4,8 +4,9 @@ struct Node {
    struct Node *nextPtr; // pointer to next node
 }; // end structure listNode                        
 // prototypes
-typedef LLnode *LLPtr; 
 typedef struct Node LLnode;
+typedef LLnode *LLPtr; 
+
 int deletes( LLPtr *sPtr, int value );
 int isEmpty( LLPtr sPtr );
 void insert( LLPtr *sPtr, int value );
