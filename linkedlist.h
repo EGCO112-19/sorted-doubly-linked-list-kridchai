@@ -1,100 +1,121 @@
-// self-referential structure                       
+                   
 struct Node {                                      
-   int data; // each listNode contains a character 
-   struct Node *nextPtr; // pointer to next node
-}; // end structure listNode                        
-// prototypes
+   int data; 
+   struct Node *nextPtr;
+   struct Node *prevPtr; 
+};                     
+
 typedef struct Node LLnode;
-typedef LLnode *LLPtr; 
+typedef LLnode* LLPtr; 
 
 int deletes( LLPtr *sPtr, int value );
 int isEmpty( LLPtr sPtr );
 void insert( LLPtr *sPtr, int value );
 void printList( LLPtr currentPtr );
+void printRList( LLPtr currentPtr );
 void instructions( void );
 
- // synonym for struct listNode
-// synonym for ListNode*
 
 
-// display program instructions to user
+
+
 void instructions( void )
 { 
    puts( "Enter your choice:\n"
       "   1 to insert an element into the list.\n"
       "   2 to delete an element from the list.\n"
       "   3 to end." );
-} // end function instructions
+} 
 
-// insert a new value into the list in sorted order
+
 void insert( LLPtr *sPtr, int value )
 { 
-   LLPtr newPtr; // pointer to new node
-   LLPtr previousPtr; // pointer to previous node in list
-   LLPtr currentPtr; // pointer to current node in list
+   LLPtr newPtr;
+   LLPtr previousPtr; 
+   LLPtr currentPtr; 
 
-   newPtr =(LLPtr) malloc( sizeof( LLnode ) ); // create node
+   newPtr =(LLPtr) malloc( sizeof( LLnode ) ); 
 
-   if ( newPtr != NULL ) { // is space available
-      newPtr->data = value; // place value in node
-      newPtr->nextPtr = NULL; // node does not link to another node
+   if ( newPtr != NULL ) { 
+      newPtr->data = value; 
+      newPtr->nextPtr = NULL; 
+      if(*sPtr ==NULL) //add this statement
+        newPtr->prevPtr == NULL;
 
       previousPtr = NULL;
       currentPtr = *sPtr;
 
-      // loop to find the correct location in the list       
+            
       while ( currentPtr != NULL && value > currentPtr->data ) {
-         previousPtr = currentPtr; // walk to ...               
-         currentPtr = currentPtr->nextPtr; // ... next node 
-      } // end while                                         
+         previousPtr = currentPtr;              
+         currentPtr = currentPtr->nextPtr;  
+      }                                        
 
-      // insert new node at beginning of list
+     
       if ( previousPtr == NULL ) { 
          newPtr->nextPtr = *sPtr;
          *sPtr = newPtr;
-      } // end if
-      else { // insert new node between previousPtr and currentPtr
+      } 
+      else {  
          previousPtr->nextPtr = newPtr;
+         newPtr->prevPtr = previousPtr;//add this line
          newPtr->nextPtr = currentPtr;
-      } // end else
-   } // end if
+      } 
+   } 
    else {
       printf( "%d not inserted. No memory available.\n", value );
-   } // end else
-} // end function insert
+   }
+   
+} 
 
-// delete a list element
+
 int deletes( LLPtr *sPtr, int value )
 { 
-   LLPtr previousPtr; // pointer to previous node in list
-   LLPtr currentPtr; // pointer to current node in list
-   LLPtr tempPtr; // temporary node pointer
+   LLPtr previousPtr; 
+   LLPtr currentPtr; 
+   LLPtr tempPtr; 
 
+   //case there is 1 node only
+  if((*sPtr)->nextPtr ==NULL&&value==( *sPtr )->data){
+    free(*sPtr);
+    *sPtr = NULL;
+    return value; 
+  }   
+   
    // delete first node
    if ( value == ( *sPtr )->data ) { 
-      tempPtr = *sPtr; // hold onto node being removed
-      *sPtr = ( *sPtr )->nextPtr; // de-thread the node
-      free( tempPtr ); // free the de-threaded node
+      tempPtr = *sPtr; 
+      *sPtr = ( *sPtr )->nextPtr;
+      ( *sPtr )->prevPtr = NULL;//add this line
+      free( tempPtr ); 
       return value;
-   } // end if
+   } 
    else { 
       previousPtr = *sPtr;
       currentPtr = ( *sPtr )->nextPtr;
 
       // loop to find the correct location in the list
       while ( currentPtr != NULL && currentPtr->data != value ) { 
-         previousPtr = currentPtr; // walk to ...  
-         currentPtr = currentPtr->nextPtr; // ... next node  
+         previousPtr = currentPtr; 
+         currentPtr = currentPtr->nextPtr;  
       } // end while
 
       // delete node at currentPtr
-      if ( currentPtr != NULL ) { 
+      if ( currentPtr != NULL&&currentPtr->nextPtr!=NULL ) { 
          tempPtr = currentPtr;
          previousPtr->nextPtr = currentPtr->nextPtr;
+         currentPtr = currentPtr->nextPtr;// add this line
+         currentPtr->prevPtr = previousPtr;//add this line
          free( tempPtr );
          return value;
-      } // end if
-   } // end else
+      } 
+      //delete last node
+      if ( currentPtr != NULL&&currentPtr->nextPtr==NULL ) { 
+         free( currentPtr );
+         previousPtr->nextPtr = NULL;
+         return value;
+      } 
+   }
 
    return '\0';
 } // end function delete
@@ -103,15 +124,15 @@ int deletes( LLPtr *sPtr, int value )
 int isEmpty( LLPtr sPtr )
 { 
    return sPtr == NULL;
-} // end function isEmpty
+} 
 
-// print the list
+
 void printList( LLPtr currentPtr )
 { 
-   // if list is empty
+ 
    if ( isEmpty( currentPtr ) ) {
       puts( "List is empty.\n" );
-   } // end if
+   } 
    else { 
       puts( "The list is:" );
 
@@ -119,8 +140,31 @@ void printList( LLPtr currentPtr )
       while ( currentPtr != NULL ) { 
          printf( "%d --> ", currentPtr->data );
          currentPtr = currentPtr->nextPtr;   
-      } // end while
+      } 
 
       puts( "NULL\n" );
-   } // end else
-} // end function printList
+   } 
+}
+
+
+void printRList( LLPtr currentPtr )
+{  
+   if ( isEmpty( currentPtr ) ) {
+      puts( "List is empty.\n" );
+   } 
+   else { 
+      puts( "The list is:" );
+
+      // while not the end of the list
+      while ( currentPtr->nextPtr != NULL ) { 
+         currentPtr = currentPtr->nextPtr;   
+      }
+      printf("NULL --> ");
+      while(currentPtr->prevPtr!=NULL){
+          printf( "%d --> ",currentPtr->data);
+        currentPtr = currentPtr->prevPtr;
+      }
+      printf("%d\n",currentPtr->data); 
+      
+   } 
+} 

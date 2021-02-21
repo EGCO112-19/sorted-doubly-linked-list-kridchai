@@ -19,8 +19,9 @@ int main( )
          case 1:
             printf( "%s", "Enter a number: " );
             scanf( "%d", &item );
-            insert( &startPtr, item ); // insert item in list
+            insert(&startPtr, item); // insert item in list
             printList( startPtr );
+            printRList( startPtr );
             break;
          case 2: // delete an element
             // if list is not empty
@@ -32,6 +33,7 @@ int main( )
                if ( deletes( &startPtr, item ) ) { // remove item
                   printf( "%d deleted.\n", item );
                   printList( startPtr );
+                  printRList( startPtr );
                } // end if
                else {
                   printf( "%d not found.\n\n", item );
