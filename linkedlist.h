@@ -53,13 +53,34 @@ void insert( LLPtr *sPtr, int value )
 
      
       if ( previousPtr == NULL ) { 
-         newPtr->nextPtr = *sPtr;
-         *sPtr = newPtr;
+         if(*sPtr==NULL)
+         {
+            newPtr->nextPtr = *sPtr;
+            *sPtr = newPtr;
+         }
+         else{
+            *sPtr = newPtr;
+            newPtr->nextPtr = currentPtr;
+            newPtr->prevPtr = NULL;
+            currentPtr->prevPtr = newPtr;
+         }
+      
       } 
       else {  
-         previousPtr->nextPtr = newPtr;
-         newPtr->prevPtr = previousPtr;//add this line
-         newPtr->nextPtr = currentPtr;
+         if(currentPtr==NULL)
+         {
+           previousPtr->nextPtr = newPtr;
+           newPtr->prevPtr = previousPtr;//add this line
+           newPtr->nextPtr = currentPtr;
+         }
+         else
+         {
+           previousPtr->nextPtr = newPtr;
+           newPtr->nextPtr = currentPtr;
+           newPtr->prevPtr = previousPtr;
+           currentPtr->prevPtr = newPtr;
+         
+         }
       } 
    } 
    else {
